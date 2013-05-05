@@ -82,7 +82,7 @@ program_state_t instruction(processor * p, program_state_t state) {
 
 processor * run(byte memory[16]) {
     processor * p = malloc(sizeof(processor));
-    if (p == NULL) {
+    if (p == NULL || memory == NULL) {
         return NULL;
     }
 
