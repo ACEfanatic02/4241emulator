@@ -27,15 +27,12 @@ byte * read_program() {
     memset(mem, 0, 16);
 
     int i;
-    char c;
     char hex[2] = "\0\0";
     for (i = 0; i < 16; ++i) {
-        c = getchar();
-        if (c == EOF) {
+        hex[0] = getchar();
+        if (hex[0] == EOF) {
             break;
-        } else if (isxdigit(c)) {
-            // this is hacky as *fuck*, but atoi doesn't work with base 16.
-            hex[0] = c;
+        } else if (isxdigit(hex[0])) {
             mem[i] = (byte)strtol(hex, NULL, 16);
         } else {
             // not a hex digit, skip it.
