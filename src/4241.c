@@ -5,14 +5,15 @@
 
 program_state_t instruction(processor * p, program_state_t state) {
 
+    byte cur = state.cur;
     byte data = 0;
-    if (p->mem[state.cur] > 0x8) {
+    if (p->mem[cur] >= 0x8) {
         // two byte instructions need the data value stored
         // and the instruction pointer incremented once more
         data = p->mem[++(state.cur)]; 
     }
 
-    switch(p->mem[state.cur]) {
+    switch(p->mem[cur]) {
         case 0x0:
             state.halt = 1;
             break;
@@ -48,10 +49,10 @@ program_state_t instruction(processor * p, program_state_t state) {
             printf("%d\n", data);
             break;
         case 0x9:
-            p->r0 = data;
+            p->r0 = p->mem[data];
             break;
         case 0xA:
-            p->r1 = data;
+            p->r1 = p->mem[data];
             break;
         case 0xB:
             p->mem[data] = p->r0;
@@ -65,11 +66,13 @@ program_state_t instruction(processor * p, program_state_t state) {
         case 0xE:
             if (p->r0 == 0) {
                 state.cur = data;
+                return state;
             }
             break;
         case 0xF:
             if (p->r0 != 0) {
                 state.cur = data;
+                return state;
             }
             break;
         default:
