@@ -28,14 +28,14 @@ byte * read_program() {
 
     int i;
     char c;
-    char * hex = malloc(sizeof(char)*4);
+    char hex[2] = "\0\0";
     for (i = 0; i < 16; ++i) {
         c = getchar();
         if (c == EOF) {
             break;
         } else if (isxdigit(c)) {
             // this is hacky as *fuck*, but atoi doesn't work with base 16.
-            snprintf(hex, 4, "0x%c", c);
+            hex[0] = c;
             mem[i] = (byte)strtol(hex, NULL, 16);
         } else {
             // not a hex digit, skip it.
@@ -44,7 +44,6 @@ byte * read_program() {
         }
     }
 
-    free(hex);
     return mem;
 }
 
