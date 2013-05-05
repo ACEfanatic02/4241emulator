@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "4241.h"
 
@@ -32,13 +33,14 @@ byte * read_program() {
         c = getchar();
         if (c == EOF) {
             break;
-        } else if (c == '\n' || c == ' ') {
-            i--;
-            continue;
-        } else {
+        } else if (isxdigit(c)) {
             // this is hacky as *fuck*, but atoi doesn't work with base 16.
             snprintf(hex, 4, "0x%c", c);
             mem[i] = (byte)strtol(hex, NULL, 16);
+        } else {
+            // not a hex digit, skip it.
+            i--;
+            continue;
         }
     }
 
