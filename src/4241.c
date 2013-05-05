@@ -5,7 +5,12 @@
 
 program_state_t instruction(processor * p, program_state_t state) {
 
-    byte data;
+    byte data = 0;
+    if (p->mem[state.cur] > 0x8) {
+        // two byte instructions need the data value stored
+        // and the instruction pointer incremented once more
+        data = p->mem[++(state.cur)]; 
+    }
 
     switch(p->mem[state.cur]) {
         case 0x0:
@@ -40,37 +45,33 @@ program_state_t instruction(processor * p, program_state_t state) {
             p->r1 = data;
             break;
         case 0x8:
-            printf("%d\n", p->mem[++(state.cur)]);
+            printf("%d\n", data);
             break;
         case 0x9:
-            p->r0 = p->mem[++(state.cur)];
+            p->r0 = data;
             break;
         case 0xA:
-            p->r1 = p->mem[++(state.cur)];
+            p->r1 = data;
             break;
         case 0xB:
-            data = p->mem[++(state.cur)];
             p->mem[data] = p->r0;
             break;
         case 0xC:
-            data = p->mem[++(state.cur)];
             p->mem[data] = p->r1;
             break;
         case 0xD:
-            state.cur = p->mem[state.cur + 1];
+            state.cur = data;
             return state;
         case 0xE:
             if (p->r0 == 0) {
-                state.cur = p->mem[state.cur + 1];
-            } else {
-                state.cur++;
+                state.cur = data;
             }
+            break;
         case 0xF:
             if (p->r0 != 0) {
-                state.cur = p->mem[state.cur + 1];
-            } else {
-                state.cur++;
+                state.cur = data;
             }
+            break;
         default:
             printf("Unknown instruction: %d\nHalting...", p->mem[state.cur]);
             state.halt = 1;
