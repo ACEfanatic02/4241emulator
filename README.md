@@ -15,7 +15,7 @@ Registers: r0 r1
 
 2-byte Instructions; Next byte interpreted as [data]
 
-* 8  = Print [data]  (as a number)
+* 8  = Print [data] as a number
 * 9  = Load value at address [data] into r0
 * 10 = Load value at address [data] into r1
 * 11 = Store r0 into address [data]
