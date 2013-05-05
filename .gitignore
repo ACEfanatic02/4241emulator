@@ -1,0 +1,8 @@
+# Compiler output
+*.o
+*.s
+*.a
+*.so
+
+bin
+build
