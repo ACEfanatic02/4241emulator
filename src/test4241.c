@@ -19,7 +19,7 @@ void print_results(processor * p) {
     }
 }
 
-byte * read_program() {
+byte * read_program_file(FILE * f) {
     byte * mem = malloc(sizeof(byte) * 16);
     if (mem == NULL) {
         return NULL;
@@ -29,13 +29,11 @@ byte * read_program() {
     int i;
     char hex[2] = "\0\0";
     for (i = 0; i < 16; ++i) {
-        hex[0] = getchar();
-        if (hex[0] == EOF) {
+        if (!fread(hex, 1, 1, f)) {
             break;
         } else if (isxdigit(hex[0])) {
             mem[i] = (byte)strtol(hex, NULL, 16);
         } else {
-            // not a hex digit, skip it.
             i--;
             continue;
         }
@@ -44,16 +42,18 @@ byte * read_program() {
     return mem;
 }
 
-int main(void) {
-    
-    // byte memory[16] = {
-    //     0x3,0x3,0x3,0x4,
-    //     0x4,0x1,0xB,0x9,
-    //     0x8,0x0,0x0,0x0,
-    //     0x0,0x0,0x0,0x0
-    // };
+int main(int argc, char * argv[]) {
 
-    byte * memory = read_program();
+    byte * memory;
+
+    if (argc > 1) {
+        char * filename = argv[1];
+        FILE * file = fopen(filename, "r");
+        memory = read_program_file(file);
+        fclose(file);
+    } else {
+        memory = read_program_file(stdin);        
+    }
 
     processor * results;
     results = run(memory);
